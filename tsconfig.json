@@ -9,17 +9,17 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "rootDir": "./lib",
     "allowImportingTsExtensions":true,
     "emitDeclarationOnly": true,
     "declaration": true,
     "strict": true,
-    "skipLibCheck": true,
-    "types": ["node"]
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
-    "services/**/*",
-    "utils/**/*"
+    "lib/**/*",
+    "lib/services/**/*",
+    "lib/utils/**/*"
   ],
   "exclude": [
     "node_modules"

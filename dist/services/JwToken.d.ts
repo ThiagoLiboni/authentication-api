@@ -1,6 +1,6 @@
 import jwt, { SignOptions } from "jsonwebtoken";
-import RedisCache from "./RedisHandler.js";
-import { Payload } from "../utils/contract.js";
+import RedisCache from "./RedisHandler.ts";
+import { Payload } from "../utils/contract.ts";
 declare class JwToken extends RedisCache {
     protected connect(): Promise<void>;
     private secretKey;

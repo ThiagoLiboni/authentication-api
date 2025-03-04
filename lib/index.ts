@@ -1,9 +1,9 @@
-import CriptoKey from "../services/CriptoKey.ts";
-import JwToken from "../services/JwToken.ts";
-import { UserLogger } from "../utils/contract.ts";
+import CriptoKey from "./services/CriptoKey.ts";
+import JwToken from "./services/JwToken.ts";
+import { UserLogger } from "./utils/contract.ts";
 import dotenv from "dotenv";
 import axios from "axios";
-import RedisCache from "../services/RedisHandler.ts";
+import RedisCache from "./services/RedisHandler.ts";
 
 dotenv.config();
 const BASE_URL = "/api/user";

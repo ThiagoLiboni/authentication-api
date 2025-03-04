@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import { validate } from "../utils/constants.js";
-import RedisCache from "./RedisHandler.js";
-import { Payload } from "../utils/contract.js";
+import RedisCache from "./RedisHandler.ts";
+import { Payload } from "../utils/contract.ts";
 
 dotenv.config();
 

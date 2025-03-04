@@ -1,5 +1,5 @@
-import { UserLogger } from "../utils/contract.ts";
-import RedisCache from "../services/RedisHandler.ts";
+import { UserLogger } from "./utils/contract.ts";
+import RedisCache from "./services/RedisHandler.ts";
 declare class Authenticate extends RedisCache {
     protected connect(): Promise<void>;
     private userLogged;
