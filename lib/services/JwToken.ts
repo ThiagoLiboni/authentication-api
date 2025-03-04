@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
-import { validate } from "../utils/constants.js";
+import { validate, visitorBody } from "../utils/constants.js";
 import RedisCache from "./RedisHandler.ts";
 import { Payload } from "../utils/contract.ts";
 
@@ -18,7 +18,7 @@ class JwToken extends RedisCache {
   public payload: Payload | null;
   public options: SignOptions;
   public optionsRefresh: SignOptions;
-  
+
   constructor(secretKey: string, payload?: Payload) {
     super();
     this.secretKey = secretKey;
@@ -32,8 +32,8 @@ class JwToken extends RedisCache {
   }
 
   async generateToken() {
-    if(!this.payload){
-      throw new Error("Payload wasn't informed")
+    if (!this.payload) {
+      throw new Error("Payload wasn't informed");
     }
     const token = jwt.sign(this.payload, this.secretKey, this.options);
     await this.set(`token:${this.payload.id}`, token);
@@ -41,8 +41,8 @@ class JwToken extends RedisCache {
     return token;
   }
   async generateRefreshToken() {
-    if(!this.payload){
-      throw new Error("Payload wasn't informed")
+    if (!this.payload) {
+      throw new Error("Payload wasn't informed");
     }
     const refreshToken = `refreshToken:${this.payload.id}`;
     const token = jwt.sign(this.payload, this.secretKey, this.optionsRefresh);
@@ -58,7 +58,7 @@ class JwToken extends RedisCache {
       if (refreshToken !== storedRefreshToken) {
         throw new Error("Token de refresh não corresponde ao armazenado.");
       }
-      await this.clearCache(`refreshToken:${userId}`)
+      await this.clearCache(`refreshToken:${userId}`);
       const newToken = await this.generateToken();
       return newToken;
     } catch (err) {
@@ -72,8 +72,21 @@ class JwToken extends RedisCache {
       if (result.length > 0) {
         return { valid: true, payload: result };
       }
-    } catch (err){
-        return { valid: false, error: err}
+    } catch (err) {
+      return { valid: false, error: err };
+    }
+  }
+  static async generateTokenTemporary(secretKey: string) {
+    const dataTemp = {
+      ...visitorBody
+    };
+    const expIn: SignOptions = { expiresIn: validate.tempExpIn };
+    try {
+      const token = jwt.sign(dataTemp, secretKey, expIn);
+      return token
+    } catch (error) {
+      console.error("Erro ao gerar o token:", error);
+      throw new Error("Não foi possível gerar o token temporário.");
     }
   }
 }

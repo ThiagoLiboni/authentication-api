@@ -17,13 +17,13 @@ class Authenticate extends RedisCache {
     }
   }
   private userLogged;
-  public db_connection: string;
+  public db_connection: string | null;
   private secretKey;
 
   constructor(userLogged: UserLogger, databaseURL: string) {
     super();
-    this.userLogged = userLogged;
-    this.db_connection = databaseURL;
+    this.userLogged = userLogged || null;
+    this.db_connection = databaseURL || null;
     this.secretKey = process.env.SECRET_KEY || "";
   }
   async logIn() {
@@ -90,7 +90,6 @@ class Authenticate extends RedisCache {
         await jwt.refreshToken(tokenRefresh);
         return true;
       }
-
       console.log("Refresh token not available. Redirecting to login.");
       return false;
     } catch (err) {
@@ -98,5 +97,9 @@ class Authenticate extends RedisCache {
       throw new Error("Error with authorization method");
     }
   }
+  static authorizationTemporary(secret: string) {
+    const tokenTemporary = JwToken.generateTokenTemporary(secret);
+    return tokenTemporary;
+  }
 }
-export default Authenticate
+export default Authenticate;
