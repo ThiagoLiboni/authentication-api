@@ -20,5 +20,6 @@ declare class JwToken extends RedisCache {
         error: unknown;
         payload?: undefined;
     } | undefined>;
+    static generateTokenTemporary(secretKey: string): Promise<string>;
 }
 export default JwToken;
