@@ -1,5 +1,5 @@
 {
-  "name": "authentication-api-",
+  "name": "authentication-api",
   "version": "1.0.0",
   "main": "dist/index.js",
   "repository": "https://github.com/ThiagoLiboni/authentication-api.git",
