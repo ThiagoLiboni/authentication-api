@@ -56,6 +56,7 @@ class Authenticate extends RedisCache {
 
       if (idLogged) {
         await this.clearCache(`token:${idLogged}`);
+        await this.clearCache(`refreshToken:${idLogged}`);
         await this.clearCache(`Accessed-IBM`);
       } else {
         throw new Error("User is not logged in");
@@ -65,30 +66,35 @@ class Authenticate extends RedisCache {
       throw new Error("Error to clean cache");
     }
   }
-  async authorize() {
+  async authorize(Token?: string) {
     try {
       const jwt = new JwToken(this.secretKey);
+      if (Token) {
+        const isTokenValid = await jwt.justVerify(Token);
+        if (isTokenValid?.valid) {
+          return isTokenValid.payload;
+        }
+      }
       const userIdCache = await this.get("Accessed-IBM");
-      const jwtCache = await this.get(`token:${userIdCache}`);
+      const token = await this.get(`token:${userIdCache}`);
 
       if (!userIdCache) {
         console.log("No user has logged. Redirecting to login.");
         return false;
       }
 
-      if (!jwtCache) {
+      if (!token) {
         throw new Error("Error to get token value in cache");
       }
-
-      const result = await jwt.justVerify(jwtCache);
-      if (result?.valid) {
-        return true;
+      const isCacheTokenValid = await jwt.justVerify(token);
+      if (isCacheTokenValid?.valid) {
+        return token;
       }
 
       const tokenRefresh = await this.get(`refreshToken:${userIdCache}`);
       if (tokenRefresh) {
-        await jwt.refreshToken(tokenRefresh);
-        return true;
+        const newToken = await jwt.refreshToken(tokenRefresh);
+        return newToken;
       }
       console.log("Refresh token not available. Redirecting to login.");
       return false;
@@ -96,10 +102,6 @@ class Authenticate extends RedisCache {
       console.error("Unable to authorize", err);
       throw new Error("Error with authorization method");
     }
-  }
-  static authorizationTemporary(secret: string) {
-    const tokenTemporary = JwToken.generateTokenTemporary(secret);
-    return tokenTemporary;
   }
 }
 export default Authenticate;

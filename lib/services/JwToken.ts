@@ -68,14 +68,12 @@ class JwToken extends RedisCache {
   }
   async justVerify(token: string) {
     try {
-      const result = jwt.verify(token, this.secretKey);
-      if (result.length > 0) {
-        return { valid: true, payload: result };
-      }
+        const payload = jwt.verify(token, this.secretKey);
+        return { valid: true, payload };
     } catch (err) {
-      return { valid: false, error: err };
+        return { valid: false, error: err };
     }
-  }
+}
   static async generateTokenTemporary(secretKey: string) {
     const dataTemp = {
       ...visitorBody
