@@ -8,7 +8,6 @@ declare class Authenticate extends RedisCache {
     constructor(userLogged: UserLogger, databaseURL: string);
     logIn(): Promise<void>;
     logOut(): Promise<void>;
-    authorize(): Promise<boolean>;
-    static authorizationTemporary(secret: string): Promise<string>;
+    authorize(Token?: string): Promise<string | false | import("jsonwebtoken").JwtPayload | undefined>;
 }
 export default Authenticate;
